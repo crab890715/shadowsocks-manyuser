@@ -78,7 +78,7 @@ class DbTransfer(object):
         conn = cymysql.connect(host=Config.MYSQL_HOST, port=Config.MYSQL_PORT, user=Config.MYSQL_USER,
                                passwd=Config.MYSQL_PASS, db=Config.MYSQL_DB, charset='utf8')
         cur = conn.cursor()
-        cur.execute("SELECT port, u, d, transfer_enable, passwd, switch, enable,service_type FROM user")
+        cur.execute("SELECT port, u, d, transfer_enable, passwd, switch, enable,service_type,days,start_time FROM user")
         rows = []
         for r in cur.fetchall():
             rows.append(list(r))
@@ -93,20 +93,25 @@ class DbTransfer(object):
     #修改下面的逻辑要小心包含跨线程访问
         for row in rows:
             if ServerPool.get_instance().server_is_run(row[0]) is True:
+                #状态为0时关闭服务
                 if row[5] == 0 or row[6] == 0:
                     #stop disable or switch off user
                     logging.info('db stop server at port [%s] reason: disable' % (row[0]))
                     ServerPool.get_instance().del_server(row[0])
-                elif row[1] + row[2] >= row[3]:
+                #若服务类型为0或者1时，需要限制流量
+                elif row[1] + row[2] >= row[3] and (row[7] in [0,1]):
                     #stop out bandwidth user
                     logging.info('db stop server at port [%s] reason: out bandwidth' % (row[0]))
+                    ServerPool.get_instance().del_server(row[0])
+                elif time.time() > row[8]*24*60*60+row[9]:
+                    logging.info('db stop server at port [%s] reason: Service maturity' % (row[0]))
                     ServerPool.get_instance().del_server(row[0])
                 if ServerPool.get_instance().tcp_servers_pool[row[0]]._config['password'] != row[4]:
                     #password changed
                     logging.info('db stop server at port [%s] reason: password changed' % (row[0]))
                     ServerPool.get_instance().del_server(row[0]) 
             else:
-                if row[5] == 1 and row[6] == 1 and row[1] + row[2] < row[3]:
+                if row[5] == 1 and row[6] == 1 and (row[1] + row[2] < row[3] or row[7]==2):
                     logging.info('db start server at port [%s] pass [%s]' % (row[0], row[4]))
                     ServerPool.get_instance().new_server(row[0], row[4])
 
