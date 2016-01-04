@@ -111,10 +111,19 @@ class DbTransfer(object):
                     logging.info('db stop server at port [%s] reason: password changed' % (row[0]))
                     ServerPool.get_instance().del_server(row[0]) 
             else:
-                if row[5] == 1 and row[6] == 1 and (row[1] + row[2] < row[3] and row[7] in [0,1]):
-                    logging.info('db start server at port [%s] pass [%s]' % (row[0], row[4]))
-                    ServerPool.get_instance().new_server(row[0], row[4])
-
+                if row[5] == 1 and row[6] == 1 :
+                    #只限制流量
+                    if row[7]==0 and row[1] + row[2] < row[3]:
+                        logging.info('db start server at port [%s] pass [%s]' % (row[0], row[4]))
+                        ServerPool.get_instance().new_server(row[0], row[4])
+                        #既要限制流量也要限制时间
+                    if  row[7] == 1 and time.time() < row[8]*24*60*60+row[9] and row[1] + row[2] < row[3]:
+                        logging.info('db start server at port [%s] pass [%s]' % (row[0], row[4]))
+                        ServerPool.get_instance().new_server(row[0], row[4])
+                        #不限流量
+                    if row[7]==2 and time.time() < row[8]*24*60*60+row[9]:
+                        logging.info('db start server at port [%s] pass [%s]' % (row[0], row[4]))
+                        ServerPool.get_instance().new_server(row[0], row[4])   
     @staticmethod
     def thread_db():
         import socket
