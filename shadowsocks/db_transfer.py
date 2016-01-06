@@ -100,7 +100,7 @@ class DbTransfer(object):
                     logging.info('db stop server at port [%s] reason: disable' % (row[0]))
                     ServerPool.get_instance().del_server(row[0])
                 #若服务类型为0或者1时，需要限制流量
-                elif row[1] + row[2] >= row[3] and (row[7] in [0,1]):
+                elif row[1] + row[2] >= row[3] and (row[7] in [0,1,3]):
                     #stop out bandwidth user
                     logging.info('db stop server at port [%s] reason: out bandwidth' % (row[0]))
                     ServerPool.get_instance().del_server(row[0])
