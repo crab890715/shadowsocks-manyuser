@@ -111,7 +111,7 @@ class DbTransfer(object):
                     #password changed
                     logging.info('db stop server at port [%s] reason: password changed' % (row[0]))
                     ServerPool.get_instance().del_server(row[0]) 
-                if Config.SERVER_TYPE=='VIP' and row[7]==0:
+                if Config.SERVER_TYPE=='VIP' and row[7] == '0':
                     ServerPool.get_instance().del_server(row[0])
                     
             else:
