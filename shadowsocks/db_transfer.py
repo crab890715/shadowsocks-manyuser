@@ -62,6 +62,7 @@ class DbTransfer(object):
         query_sql = query_head + ' SET u = CASE port' + query_sub_when + \
                     ' END, d = CASE port' + query_sub_when2 + \
                     ' END, t = ' + str(int(last_time)) + \
+                    ',last_login_server_id = ' +Config.SERVER_ID + \
                     ' WHERE port IN (%s)' % query_sub_in
         #print query_sql
         conn = cymysql.connect(host=Config.MYSQL_HOST, port=Config.MYSQL_PORT, user=Config.MYSQL_USER,
