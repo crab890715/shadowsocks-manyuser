@@ -62,7 +62,7 @@ class DbTransfer(object):
         query_sql = query_head + ' SET u = CASE port' + query_sub_when + \
                     ' END, d = CASE port' + query_sub_when2 + \
                     ' END, t = ' + str(int(last_time)) + \
-                    ',last_login_server_id = ' +Config.SERVER_ID + \
+                    ',last_login_server_id = ' +str(int(Config.SERVER_ID)) + \
                     ' WHERE port IN (%s)' % query_sub_in
         #print query_sql
         conn = cymysql.connect(host=Config.MYSQL_HOST, port=Config.MYSQL_PORT, user=Config.MYSQL_USER,
@@ -111,7 +111,7 @@ class DbTransfer(object):
                     #password changed
                     logging.info('db stop server at port [%s] reason: password changed' % (row[0]))
                     ServerPool.get_instance().del_server(row[0]) 
-                if Config.SERVER_TYPE=='VIP' and row[7] == '0':
+                if Config.SERVER_TYPE=='VIP' and row[7] == 0:
                     ServerPool.get_instance().del_server(row[0])
                     
             else:
