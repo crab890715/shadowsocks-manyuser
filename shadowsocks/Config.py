@@ -10,6 +10,10 @@ MYSQL_DB = 'ss'
 SERVER_ID = 1
 #节点类型：FREE为免费，VIP为付费节点,必须大写
 SERVER_TYPE= 'FREE'
+#更新用户流量
+API_HOST='wykxsw.com'
+API_UPDATE_TRANSFER="/api/update"
+
 MANAGE_PASS = 'ss233333333'
 #if you want manage in other server you should set this value to global ip
 MANAGE_BIND_IP = '127.0.0.1'

@@ -34,6 +34,7 @@ import threading
 import sys
 import asyncmgr
 import Config
+import hashlib
 from socket import *
 
 class ServerPool(object):
@@ -115,6 +116,8 @@ class ServerPool(object):
         port = int(port)
         logging.info("del server at %d" % port)
         try:
+            m5 = hashlib.md5()
+            sign = m5.update(port+"ADSL.2015")
             udpsock = socket(AF_INET, SOCK_DGRAM)
             udpsock.sendto('%s:%s:0:0' % (Config.MANAGE_PASS, port), (Config.MANAGE_BIND_IP, Config.MANAGE_PORT))
             udpsock.close()
