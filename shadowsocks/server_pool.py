@@ -128,7 +128,6 @@ class ServerPool(object):
                 conn.request('GET', Config.API_EVENT_DEL_SERVER, data, headers)
                 conn.getresponse()
                 conn.close()
-                pass
             udpsock = socket(AF_INET, SOCK_DGRAM)
             udpsock.sendto('%s:%s:0:0' % (Config.MANAGE_PASS, port), (Config.MANAGE_BIND_IP, Config.MANAGE_PORT))
             udpsock.close()
