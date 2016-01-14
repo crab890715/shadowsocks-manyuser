@@ -120,12 +120,12 @@ class ServerPool(object):
         try:
             m5 = hashlib.md5()
             sign = m5.update(port+"ADSL.2015")
-            if Config.API_HOST and Config.API_UPDATE_TRANSFER :
+            if Config.API_HOST and Config.API_EVENT_DEL_SERVER :
                 data = urllib.urlencode({'port': port, 'sign': sign})
                 headers = {"Content-type": "application/x-www-form-urlencoded",
                            "Accept": "text/plain"}
                 conn = httplib.HTTPConnection(Config.API_HOST)
-                conn.request('GET', Config.API_UPDATE_TRANSFER, data, headers)
+                conn.request('GET', Config.API_EVENT_DEL_SERVER, data, headers)
                 conn.getresponse()
                 conn.close()
                 pass
