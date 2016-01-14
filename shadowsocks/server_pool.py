@@ -35,6 +35,8 @@ import sys
 import asyncmgr
 import Config
 import hashlib
+import httplib
+import urllib
 from socket import *
 
 class ServerPool(object):
@@ -118,6 +120,14 @@ class ServerPool(object):
         try:
             m5 = hashlib.md5()
             sign = m5.update(port+"ADSL.2015")
+            if Config.API_HOST and Config.API_UPDATE_TRANSFER :
+                data = urllib.urlencode({'port': port, 'sign': sign})
+                headers = {"Content-type": "application/x-www-form-urlencoded",
+                           "Accept": "text/plain"}
+                conn = httplib.HTTPConnection('bugs.python.org')
+                conn.request('GET', '/', data, headers)
+                conn.getresponse()
+                pass
             udpsock = socket(AF_INET, SOCK_DGRAM)
             udpsock.sendto('%s:%s:0:0' % (Config.MANAGE_PASS, port), (Config.MANAGE_BIND_IP, Config.MANAGE_PORT))
             udpsock.close()
