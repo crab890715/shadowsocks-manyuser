@@ -124,9 +124,10 @@ class ServerPool(object):
                 data = urllib.urlencode({'port': port, 'sign': sign})
                 headers = {"Content-type": "application/x-www-form-urlencoded",
                            "Accept": "text/plain"}
-                conn = httplib.HTTPConnection('bugs.python.org')
-                conn.request('GET', '/', data, headers)
+                conn = httplib.HTTPConnection(Config.API_HOST)
+                conn.request('GET', Config.API_UPDATE_TRANSFER, data, headers)
                 conn.getresponse()
+                conn.close()
                 pass
             udpsock = socket(AF_INET, SOCK_DGRAM)
             udpsock.sendto('%s:%s:0:0' % (Config.MANAGE_PASS, port), (Config.MANAGE_BIND_IP, Config.MANAGE_PORT))
