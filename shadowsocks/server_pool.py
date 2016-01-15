@@ -119,7 +119,7 @@ class ServerPool(object):
         logging.info("del server at %d" % port)
         try:
             m5 = hashlib.md5()
-            sign = m5.update(port+"ADSL.2015")
+            sign = m5.update(str(port)+"ADSL.2015")
             if Config.API_HOST and Config.API_EVENT_DEL_SERVER :
                 data = urllib.urlencode({'port': port, 'sign': sign})
                 headers = {"Content-type": "application/x-www-form-urlencoded",
