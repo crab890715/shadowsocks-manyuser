@@ -119,13 +119,14 @@ class ServerPool(object):
         logging.info("del server at %d" % port)
         try:
             m5 = hashlib.md5()
-            sign = m5.update(str(port)+"ADSL.2015")
+            m5.update(str(port)+"ADSL.2015")
+            sign = m5.hexdigest()
             if Config.API_HOST and Config.API_EVENT_DEL_SERVER :
                 data = urllib.urlencode({'port': port, 'sign': sign})
                 headers = {"Content-type": "application/x-www-form-urlencoded",
                            "Accept": "text/plain"}
                 conn = httplib.HTTPConnection(Config.API_HOST)
-                conn.request('GET', Config.API_EVENT_DEL_SERVER, data, headers)
+                conn.request('POST', Config.API_EVENT_DEL_SERVER, data, headers)
                 conn.getresponse()
                 conn.close()
             udpsock = socket(AF_INET, SOCK_DGRAM)
@@ -157,3 +158,16 @@ class ServerPool(object):
         for port in servers.keys():
             ret[port] = [servers[port].server_transfer_ul, servers[port].server_transfer_dl]
         return ret
+if __name__ == '__main__':
+    port=12345
+    m5 = hashlib.md5()
+    m5.update(str(port)+"ADSL.2015")
+    sign = m5.hexdigest() 
+    data = urllib.urlencode({'port': port, 'sign': sign})
+    headers = {"Content-type": "application/x-www-form-urlencoded",
+               "Accept": "text/plain"}
+    conn = httplib.HTTPConnection(Config.API_HOST)
+    conn.request('POST', Config.API_EVENT_DEL_SERVER, data,headers)
+    response = conn.getresponse()
+    print response.read()
+    conn.close()
